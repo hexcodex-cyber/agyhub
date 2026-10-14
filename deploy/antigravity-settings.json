@@ -1,0 +1,15 @@
+{
+  "enableTerminalSandbox": false,
+  "toolPermission": "always-proceed",
+  "permissions": {
+    "allow": [
+      "read_file(/var/lib/agyhub/status)"
+    ],
+    "deny": [
+      "read_file(/etc/shadow)",
+      "read_file(/root)",
+      "read_file(/var/lib/agyhub/hub/secrets.json)",
+      "read_file(/home/agyhub/.gemini)"
+    ]
+  }
+}

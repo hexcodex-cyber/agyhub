@@ -1,0 +1,21 @@
+#!/bin/sh
+# Root-owned snapshot. agyhub can read the result and cannot write this directory.
+set -eu
+out=/var/lib/agyhub/status/snapshot.txt
+tmp=$(mktemp)
+{
+  echo "when $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "host $(hostname)"
+  echo
+  echo "## disk"
+  df -hP -x tmpfs -x devtmpfs
+  echo
+  echo "## listening"
+  ss -ltnH
+  echo
+  echo "## services"
+  systemctl is-active agyhub.service agyhub-status.timer ssh.service docker.service 2>/dev/null || true
+  systemctl --no-pager --plain list-units --type=service --state=running --no-legend
+} > "$tmp"
+install -m 0644 -o root -g root "$tmp" "$out"
+rm -f "$tmp"

@@ -1,0 +1,959 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,interactive-widget=resizes-content">
+<meta name="theme-color" content="#101011">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="__HUB__">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/icon-192.png" type="image/png">
+<title>__HUB__</title>
+<style>
+html{color-scheme:dark}
+html,body{height:100%;margin:0;background:#101011;overflow:hidden}
+body{font:17px/1.45 system-ui,sans-serif;color:#ececec;overscroll-behavior:none;-webkit-tap-highlight-color:transparent}
+button,textarea,input{font:inherit;color:inherit}
+button{cursor:pointer}
+#app{position:fixed;left:0;right:0;top:0;display:flex;width:100%;height:100dvh}
+#side{width:272px;flex:0 0 272px;display:flex;flex-direction:column;height:100%;box-sizing:border-box;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom);background:#16171a;border-right:1px solid #2a2c31}
+#brand{display:flex;align-items:center;gap:8px;padding:14px 14px 4px;font-weight:650;letter-spacing:.01em}
+#brand i{width:8px;height:8px;border-radius:50%;background:#3d9a62;display:block}
+#brand.down i{background:#c45555}
+#brand.wait i{background:#d2a34a}
+#new{margin:10px 12px;text-align:left;background:#22242a;color:#ececec;border:1px solid #34373e}
+#sessions{list-style:none;margin:0;padding:0 8px 8px;overflow:auto;flex:1;display:flex;flex-direction:column;gap:2px}
+#sessions button{display:flex;width:100%;text-align:left;background:transparent;color:#ececec;gap:8px;align-items:baseline;border-radius:10px;padding:10px 10px}
+#sessions button.on{background:#243028}
+#sessions .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#sessions .when{color:#8b919a;font-size:12px;flex:0 0 auto}
+#side a{margin:10px 12px 12px;text-align:center;color:#c5c8ce;background:transparent;border:1px solid #34373e}
+#main{flex:1;min-width:0;display:flex;flex-direction:column;height:100%;background:#101011}
+header,form{display:flex;gap:8px;align-items:center;width:100%;box-sizing:border-box}
+header{padding:max(8px,env(safe-area-inset-top)) max(10px,env(safe-area-inset-right)) 8px max(10px,env(safe-area-inset-left));border-bottom:1px solid #2a2c31;min-height:52px}
+#titles{flex:1;min-width:0}
+h1{font-size:16px;margin:0;font-weight:640;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#state{display:block;color:#8b919a;font-size:12px;font-weight:500;min-height:1.2em}
+#state.run{color:#e0c27a}
+form{padding:8px max(10px,env(safe-area-inset-right)) max(10px,env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-left));border-top:1px solid #2a2c31;background:#101011}
+#log{flex:1;overflow:auto;display:flex;flex-direction:column;gap:10px;padding:14px max(16px,env(safe-area-inset-right)) 16px max(16px,env(safe-area-inset-left));width:100%;max-width:46rem;margin:0 auto;box-sizing:border-box}
+#log>*{flex-shrink:0}
+button,a{padding:10px 12px;background:#2f6f4e;color:#fff;text-decoration:none;border-radius:10px;border:0;min-height:44px;box-sizing:border-box}
+button:disabled{opacity:.4}
+#menu{display:none;background:#22242a;color:#ececec;padding:8px 12px}
+#stop{background:#3a2a2a;color:#f0d0d0}
+#stop:disabled{background:#22242a;color:#8b919a}
+.bubble{max-width:min(40rem,92%);word-break:break-word}
+.me{align-self:flex-end;background:#1d4f86;padding:10px 14px;border-radius:16px 16px 5px 16px;white-space:pre-wrap}
+.grok{align-self:stretch;max-width:46rem;padding:2px 2px 4px}
+.grok p,.grok li,.grok blockquote{white-space:pre-wrap}
+.grok p{margin:0 0 .7em}
+.grok p:last-child{margin:0}
+.grok h2,.grok h3{font-size:1.05em;margin:.2em 0 .4em;font-weight:650}
+.grok ul,.grok ol{margin:.2em 0 .7em;padding-left:1.2em}
+.grok li{margin:.15em 0}
+.grok blockquote{margin:.2em 0 .7em;padding-left:10px;border-left:3px solid #3a3d44;color:#c5c8ce}
+.grok a{color:#8eb6ff;background:none;padding:0;min-height:0;border-radius:0}
+.grok code{font:14px/1.4 ui-monospace,monospace;background:#22242a;padding:1px 5px;border-radius:5px}
+.grok pre.code{position:relative;margin:.3em 0 .8em;padding:28px 12px 12px;background:#1a1b1f;border:1px solid #2e3138;border-radius:12px;overflow:auto}
+.grok pre.code code{background:none;padding:0;white-space:pre;display:block}
+.copy{position:absolute;top:6px;right:6px;min-height:0;padding:4px 8px;font-size:12px;background:#2a2d34;color:#ddd}
+.tool{align-self:stretch;flex-shrink:0;min-height:44px;border:1px solid #2e3138;border-radius:12px;background:#16171a;overflow:hidden}
+.tool-h{display:flex;width:100%;gap:8px;align-items:center;background:transparent;color:#ececec;text-align:left;border-radius:0}
+.tool-h .name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tool-h .st{color:#8b919a;font-size:12px}
+.dot{width:8px;height:8px;border-radius:50%;background:#d2a34a;flex:0 0 auto}
+.dot.ok{background:#3d9a62}
+.dot.bad{background:#d25b5b}
+.tool-b{display:none;margin:0;padding:0 12px 12px;color:#d5d8de;font:13px/1.4 ui-monospace,monospace;white-space:pre-wrap;word-break:break-word;max-height:16rem;overflow:auto}
+.tool.open.has-body .tool-b{display:block}
+.thought{color:#8b919a;font-size:14px}
+.thought summary{cursor:pointer}
+.thought-body{white-space:pre-wrap;word-break:break-word;margin-top:4px}
+.err{color:#f0a0a0;font-size:14px}
+#empty{color:#8b919a;margin:auto;text-align:center;padding:24px}
+#empty b{display:block;color:#ececec;font-size:18px;margin-bottom:6px}
+#signin{display:none;margin:12px auto 0;max-width:46rem;width:calc(100% - 24px);box-sizing:border-box;background:#16171a;border:1px solid #2e3138;border-radius:14px;padding:14px}
+#signin.on{display:block}
+#signin b{display:block;margin-bottom:4px}
+#signin p{color:#8b919a;font-size:14px;margin:0 0 10px}
+#signin a{display:block;color:#8eb6ff;background:none;padding:8px 0;min-height:0;word-break:break-all}
+#signin input{width:100%;box-sizing:border-box;margin:8px 0;padding:12px 14px;background:#1c1d21;border:1px solid #34373e;border-radius:12px}
+#signin-msg{color:#e0c27a}
+textarea{flex:1;padding:12px 14px;background:#1c1d21;border:1px solid #34373e;border-radius:14px;resize:none;min-height:48px;max-height:9rem}
+#send{align-self:flex-end}
+#queue{display:none;max-width:46rem;margin:0 auto;padding:0 12px 8px;color:#e0c27a;font-size:13px;width:100%;box-sizing:border-box}
+#queue button{min-height:0;padding:2px 8px;margin-left:8px;background:#3a3424;color:#e0c27a}
+#pending{display:none;gap:8px;overflow:auto;padding:8px 12px 0;max-width:46rem;margin:0 auto;width:100%;box-sizing:border-box}
+#pending.on{display:flex}
+.thumb{position:relative;flex:0 0 auto}
+.thumb img{height:72px;width:72px;object-fit:cover;border-radius:10px;display:block;border:1px solid #34373e}
+.thumb button{position:absolute;top:2px;right:2px;min-height:0;padding:0 6px;background:rgba(0,0,0,.7);color:#fff}
+.shot{max-width:min(24rem,100%);border-radius:12px;display:block;margin-top:8px}
+#attach{background:#22242a;color:#ececec;align-self:flex-end}
+#backdrop{display:none}
+@media (max-width:800px){
+  #menu{display:inline-flex;align-items:center}
+  #side{position:fixed;top:0;left:0;bottom:0;z-index:2;transform:translateX(-105%);transition:transform .18s ease}
+  body.menu #side{transform:translateX(0)}
+  #backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:1}
+  body.menu #backdrop{display:block}
+}
+</style>
+<div id="backdrop"></div>
+<div id="app">
+<aside id="side">
+  <div id="brand"><i></i><span id="hub">__HUB__</span></div>
+  <button id="new" type="button">New chat</button>
+  <ul id="sessions"></ul>
+  <a href="/logout">Log out</a>
+</aside>
+<div id="main">
+<header>
+  <button id="menu" type="button" aria-label="Chats">Chats</button>
+  <div id="titles">
+    <h1 id="title"></h1>
+    <span id="state"></span>
+  </div>
+  <button id="stop" type="button" disabled>Stop</button>
+</header>
+<div id="signin">
+  <b>agy is not signed in</b>
+  <p>Get the Google link, open it, then paste the code once. A second paste burns the login.</p>
+  <button id="signin-start" type="button">Get sign-in link</button>
+  <a id="signin-url" href="" hidden target="_blank" rel="noopener noreferrer"></a>
+  <input id="signin-code" hidden autocomplete="off" placeholder="Authorization code">
+  <button id="signin-send" type="button" hidden>Submit code</button>
+  <p id="signin-msg"></p>
+</div>
+<div id="log"><div id="empty"><b id="empty-name">__HUB__</b>Ask here, or paste a screenshot. A turn can take a while. You can type the next message while it runs.</div></div>
+<div id="queue"><span id="queue-text"></span><button id="queue-clear" type="button">Cancel</button></div>
+<div id="pending"></div>
+<form id="composer">
+  <input id="file" type="file" accept="image/png,image/jpeg,image/webp,image/gif" multiple hidden>
+  <button id="attach" type="button">Image</button>
+  <textarea id="text" rows="1" enterkeyhint="send" placeholder="Message, or paste a screenshot"></textarea>
+  <button id="send" disabled>Send</button>
+</form>
+</div>
+</div>
+<script>
+var sid = "";
+var autoPicked = false;
+var running = false;
+var queued = null;
+var pending = [];
+var shrinking = 0;
+var sendWhenReady = false;
+var hideUserEcho = false;
+var link = "up";
+var lastKind = "";
+var lastEl = null;
+var toolRows = {};
+var titles = {};
+var lastSessions = [];
+var retryMs = 1000;
+var log = document.getElementById("log");
+var list = document.getElementById("sessions");
+var titleEl = document.getElementById("title");
+var stateEl = document.getElementById("state");
+var sendBtn = document.getElementById("send");
+var stopBtn = document.getElementById("stop");
+var box = document.getElementById("text");
+var brand = document.getElementById("brand");
+var hubEl = document.getElementById("hub");
+var emptyName = document.getElementById("empty-name");
+var queueBar = document.getElementById("queue");
+var queueText = document.getElementById("queue-text");
+var stick = true;
+var ws = null;
+var sawCancel = false;
+
+(function nameHub() {
+  var label = (hubEl.textContent || "").trim();
+  if (!label || label === "__HUB__") {
+    var host = location.hostname || "";
+    label = host.indexOf("agy") !== -1 ? "agyhub" : "agyhub";
+  }
+  hubEl.textContent = label;
+  emptyName.textContent = label;
+  document.title = label;
+  var apple = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+  if (apple && apple.content === "__HUB__") apple.content = label;
+})();
+
+function paintSend() {
+  sendBtn.disabled = !sid;
+  stopBtn.disabled = !running;
+  stopBtn.textContent = running ? stopBtn.textContent : "Stop";
+  if (!sid) sendBtn.textContent = "Send";
+  else if (queued) sendBtn.textContent = "Queued";
+  else if (running) sendBtn.textContent = "Queue";
+  else sendBtn.textContent = "Send";
+  queueBar.style.display = queued ? "block" : "none";
+  if (queued) queueText.textContent = "Sends when this turn finishes";
+}
+
+function setRunning(on) {
+  running = on;
+  if (!on) stopBtn.textContent = "Stop";
+  paintSend();
+  paintState();
+}
+
+function setLink(mode) {
+  link = mode;
+  brand.classList.remove("down", "wait");
+  if (mode === "down") brand.classList.add("down");
+  if (mode === "wait") brand.classList.add("wait");
+  paintState();
+}
+
+function paintState() {
+  if (link === "wait") stateEl.textContent = "Reconnecting";
+  else if (link === "down") stateEl.textContent = "Agent down";
+  else if (running) stateEl.textContent = "Working";
+  else stateEl.textContent = sid ? "Ready" : "";
+  stateEl.className = running && link === "up" ? "run" : "";
+}
+
+function closeMenu() { document.body.classList.remove("menu"); }
+
+function nearBottom() {
+  return log.scrollHeight - log.scrollTop - log.clientHeight < 90;
+}
+
+function scroll() { if (stick) log.scrollTop = log.scrollHeight; }
+
+log.addEventListener("scroll", function () { stick = nearBottom(); });
+
+function resetStream() {
+  lastKind = "";
+  lastEl = null;
+  toolRows = {};
+}
+
+function dropEmpty() {
+  var empty = document.getElementById("empty");
+  if (empty) empty.remove();
+}
+
+function showEmpty() {
+  if (document.getElementById("empty")) return;
+  var holder = document.createElement("div");
+  holder.id = "empty";
+  var name = document.createElement("b");
+  name.textContent = hubEl.textContent || "";
+  holder.appendChild(name);
+  holder.appendChild(document.createTextNode("Ask here, or paste a screenshot. A turn can take a while. You can type the next message while it runs."));
+  log.appendChild(holder);
+}
+
+function bubble(kind) {
+  dropEmpty();
+  var row = document.createElement("div");
+  row.className = "bubble " + (kind === "user_message_chunk" ? "me" : "grok");
+  log.appendChild(row);
+  lastEl = row;
+  lastKind = kind;
+  return row;
+}
+
+function copyText(text, btn) {
+  function ok() {
+    btn.textContent = "Copied";
+    setTimeout(function () { btn.textContent = "Copy"; }, 1200);
+  }
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(ok).catch(function () { fallback(); });
+    return;
+  }
+  fallback();
+  function fallback() {
+    var area = document.createElement("textarea");
+    area.value = text;
+    document.body.appendChild(area);
+    area.select();
+    try { document.execCommand("copy"); ok(); } catch (e) {}
+    area.remove();
+  }
+}
+
+function appendInline(parent, text) {
+  var i = 0;
+  while (i < text.length) {
+    if (text.slice(i, i + 2) === "**") {
+      var endb = text.indexOf("**", i + 2);
+      if (endb !== -1) {
+        var strong = document.createElement("strong");
+        appendInline(strong, text.slice(i + 2, endb));
+        parent.appendChild(strong);
+        i = endb + 2;
+        continue;
+      }
+    }
+    if (text[i] === "`") {
+      var endc = text.indexOf("`", i + 1);
+      if (endc !== -1) {
+        var code = document.createElement("code");
+        code.textContent = text.slice(i + 1, endc);
+        parent.appendChild(code);
+        i = endc + 1;
+        continue;
+      }
+    }
+    if (text[i] === "[") {
+      var close = text.indexOf("]", i + 1);
+      if (close !== -1 && text[close + 1] === "(") {
+        var endu = text.indexOf(")", close + 2);
+        if (endu !== -1) {
+          var href = text.slice(close + 2, endu).trim();
+          if (/^https?:\/\//i.test(href) && href.indexOf(" ") === -1) {
+            var linkEl = document.createElement("a");
+            linkEl.href = href;
+            linkEl.target = "_blank";
+            linkEl.rel = "noopener noreferrer";
+            linkEl.textContent = text.slice(i + 1, close);
+            parent.appendChild(linkEl);
+            i = endu + 1;
+            continue;
+          }
+        }
+      }
+    }
+    if (text[i] === "*" && text[i + 1] && text[i + 1] !== "*" && text[i + 1] !== " ") {
+      var endi = text.indexOf("*", i + 1);
+      if (endi > i + 1 && text[endi - 1] !== " ") {
+        var em = document.createElement("em");
+        em.textContent = text.slice(i + 1, endi);
+        parent.appendChild(em);
+        i = endi + 1;
+        continue;
+      }
+    }
+    var next = text.length;
+    var marks = [text.indexOf("**", i), text.indexOf("`", i), text.indexOf("[", i), text.indexOf("*", i)];
+    for (var m = 0; m < marks.length; m++) {
+      if (marks[m] > i && marks[m] < next) next = marks[m];
+    }
+    if (next === i) next = i + 1;
+    parent.appendChild(document.createTextNode(text.slice(i, next)));
+    i = next;
+  }
+}
+
+function listMatch(line) {
+  var m = /^(\s*)([-*]|\d+\.)\s+(.*)$/.exec(line);
+  if (!m) return null;
+  return { indent: m[1].length, ordered: m[2].indexOf(".") !== -1, text: m[3] };
+}
+
+function renderList(lines, start) {
+  var first = listMatch(lines[start]);
+  var list = document.createElement(first.ordered ? "ol" : "ul");
+  var i = start;
+  while (i < lines.length) {
+    if (!lines[i].trim()) break;
+    var item = listMatch(lines[i]);
+    if (!item || item.indent < first.indent) break;
+    if (item.ordered !== first.ordered && item.indent === first.indent) break;
+    if (item.indent > first.indent) {
+      var nested = renderList(lines, i);
+      var last = list.lastChild;
+      if (!last) {
+        last = document.createElement("li");
+        list.appendChild(last);
+      }
+      last.appendChild(nested.node);
+      i = nested.next;
+      continue;
+    }
+    var li = document.createElement("li");
+    appendInline(li, item.text);
+    list.appendChild(li);
+    i++;
+  }
+  return { node: list, next: i };
+}
+
+function renderBlocks(parent, src) {
+  var lines = src.replace(/\r\n/g, "\n").split("\n");
+  var i = 0;
+  while (i < lines.length) {
+    var line = lines[i];
+    if (!line.trim()) { i++; continue; }
+    var hm = /^(#{1,3})\s+(.*)$/.exec(line);
+    if (hm) {
+      var heading = document.createElement(hm[1].length === 1 ? "h2" : "h3");
+      appendInline(heading, hm[2]);
+      parent.appendChild(heading);
+      i++;
+      continue;
+    }
+    if (/^>\s?/.test(line)) {
+      var quote = document.createElement("blockquote");
+      var qbuf = [];
+      while (i < lines.length && /^>\s?/.test(lines[i])) {
+        qbuf.push(lines[i].replace(/^>\s?/, ""));
+        i++;
+      }
+      appendInline(quote, qbuf.join(" "));
+      parent.appendChild(quote);
+      continue;
+    }
+    if (listMatch(line)) {
+      var built = renderList(lines, i);
+      parent.appendChild(built.node);
+      i = built.next;
+      continue;
+    }
+    var buf = [];
+    while (i < lines.length && lines[i].trim() && !listMatch(lines[i]) && !/^(#{1,3}\s|>\s?)/.test(lines[i]) && lines[i].indexOf("```") !== 0) {
+      buf.push(lines[i]);
+      i++;
+    }
+    if (buf.length) {
+      var para = document.createElement("p");
+      appendInline(para, buf.join("\n"));
+      parent.appendChild(para);
+    } else {
+      i++;
+    }
+  }
+}
+
+function renderMarkdown(el, src) {
+  el.textContent = "";
+  var parts = src.split("```");
+  for (var p = 0; p < parts.length; p++) {
+    if (p % 2 === 1) {
+      var raw = parts[p];
+      var nl = raw.indexOf("\n");
+      var codeText = nl === -1 ? raw.replace(/^\w+\s*/, "") : raw.slice(nl + 1);
+      codeText = codeText.replace(/\n$/, "");
+      var pre = document.createElement("pre");
+      pre.className = "code";
+      var copyBtn = document.createElement("button");
+      copyBtn.type = "button";
+      copyBtn.className = "copy";
+      copyBtn.textContent = "Copy";
+      copyBtn.onclick = (function (text, btn) {
+        return function () { copyText(text, btn); };
+      })(codeText, copyBtn);
+      var code = document.createElement("code");
+      code.textContent = codeText;
+      pre.appendChild(copyBtn);
+      pre.appendChild(code);
+      el.appendChild(pre);
+    } else if (parts[p]) {
+      renderBlocks(el, parts[p]);
+    }
+  }
+}
+
+function closeThought() {
+  if (lastKind === "agent_thought_chunk" && lastEl && lastEl.parentNode) {
+    var summary = lastEl.parentNode.querySelector("summary");
+    if (summary) summary.textContent = "Thought";
+  }
+}
+
+function addText(kind, text) {
+  if (!text) return;
+  if (kind === "err") {
+    dropEmpty();
+    var row = document.createElement("div");
+    row.className = "err";
+    row.textContent = text;
+    log.appendChild(row);
+    lastKind = "err";
+    lastEl = row;
+    scroll();
+    return;
+  }
+  if (kind !== lastKind) closeThought();
+  if (kind === "user_message_chunk") {
+    if (lastKind === kind && lastEl) lastEl.textContent += text;
+    else bubble(kind).textContent = text;
+  } else {
+    var el = (lastKind === kind && lastEl) ? lastEl : bubble(kind);
+    el._raw = (el._raw || "") + text;
+    renderMarkdown(el, el._raw);
+  }
+  scroll();
+}
+
+function addThought(text) {
+  var body;
+  if (lastKind === "agent_thought_chunk" && lastEl) body = lastEl;
+  else {
+    dropEmpty();
+    closeThought();
+    var details = document.createElement("details");
+    details.className = "thought";
+    var summary = document.createElement("summary");
+    summary.textContent = "Thinking";
+    body = document.createElement("div");
+    body.className = "thought-body";
+    details.appendChild(summary);
+    details.appendChild(body);
+    log.appendChild(details);
+    lastEl = body;
+    lastKind = "agent_thought_chunk";
+  }
+  body.textContent += text;
+  scroll();
+}
+
+function statusClass(status) {
+  var s = (status || "").toLowerCase();
+  if (s === "completed" || s === "done" || s === "success") return "ok";
+  if (s === "failed" || s === "error" || s === "cancelled" || s === "canceled") return "bad";
+  return "";
+}
+
+function addTool(msg) {
+  closeThought();
+  var id = msg.tool || "";
+  var row = id && toolRows[id];
+  if (!row && !id && lastKind === "tool_call" && lastEl) row = lastEl;
+  if (!row) {
+    dropEmpty();
+    row = document.createElement("div");
+    row.className = "tool";
+    var head = document.createElement("button");
+    head.type = "button";
+    head.className = "tool-h";
+    var dot = document.createElement("i");
+    dot.className = "dot";
+    var name = document.createElement("span");
+    name.className = "name";
+    var st = document.createElement("span");
+    st.className = "st";
+    var body = document.createElement("pre");
+    body.className = "tool-b";
+    head.appendChild(dot);
+    head.appendChild(name);
+    head.appendChild(st);
+    head.onclick = function () { row.classList.toggle("open"); };
+    row.appendChild(head);
+    row.appendChild(body);
+    row._dot = dot;
+    row._name = name;
+    row._st = st;
+    row._body = body;
+    log.appendChild(row);
+    if (id) toolRows[id] = row;
+    lastEl = row;
+    lastKind = "tool_call";
+  }
+  if (msg.title) row.setAttribute("data-title", msg.title);
+  row._name.textContent = row.getAttribute("data-title") || msg.title || "tool";
+  var status = msg.status || "";
+  row._st.textContent = status;
+  row._dot.className = "dot " + statusClass(status);
+  if (msg.body) {
+    row._body.textContent = msg.body;
+    row.classList.add("has-body");
+  }
+  if (statusClass(status) === "ok") {
+    if (!row._settled) row.classList.remove("open");
+    row._settled = true;
+  } else if (!row._settled) {
+    row.classList.add("open");
+  }
+  scroll();
+}
+
+function addShot(mime, data, mine) {
+  if (!/^image\/(png|jpeg|webp|gif)$/.test(mime || "")) return;
+  if (!/^[A-Za-z0-9+/=]+$/.test(data || "")) return;
+  dropEmpty();
+  var img = document.createElement("img");
+  img.className = "shot";
+  img.alt = "screenshot";
+  img.src = "data:" + mime + ";base64," + data;
+  var row = document.createElement("div");
+  row.className = "bubble " + (mine ? "me" : "grok");
+  row.appendChild(img);
+  log.appendChild(row);
+  lastKind = mine ? "user_image" : "agent_image";
+  lastEl = row;
+  scroll();
+}
+
+function drawOutgoing(text, images) {
+  dropEmpty();
+  var row = document.createElement("div");
+  row.className = "bubble me";
+  if (text) row.appendChild(document.createTextNode(text));
+  (images || []).forEach(function (img) {
+    if (!/^image\/(png|jpeg|webp|gif)$/.test(img.mime || "")) return;
+    if (!/^[A-Za-z0-9+/=]+$/.test(img.data || "")) return;
+    var el = document.createElement("img");
+    el.className = "shot";
+    el.alt = "screenshot";
+    el.src = "data:" + img.mime + ";base64," + img.data;
+    row.appendChild(el);
+  });
+  log.appendChild(row);
+  lastKind = "user_message_chunk";
+  lastEl = row;
+  hideUserEcho = true;
+  scroll();
+}
+
+function showUpdate(msg) {
+  if (msg.id && msg.id !== sid) return;
+  var kind = msg.kind || "";
+  if (hideUserEcho && (kind === "user_message_chunk" || kind === "user_image")) return;
+  if (kind !== "user_message_chunk" && kind !== "user_image") hideUserEcho = false;
+  if (kind === "user_image" || kind === "agent_image") addShot(msg.mime, msg.data, kind === "user_image");
+  else if (kind === "agent_thought_chunk") addThought(msg.text || "");
+  else if (kind === "tool_call" || kind === "tool_call_update") addTool(msg);
+  else if (kind === "user_message_chunk" || kind === "agent_message_chunk") addText(kind, msg.text || "");
+}
+
+function relTime(iso) {
+  if (!iso) return "";
+  var t = Date.parse(iso);
+  if (isNaN(t)) return "";
+  var s = Math.max(0, (Date.now() - t) / 1000);
+  if (s < 45) return "now";
+  if (s < 3600) return Math.floor(s / 60) + "m";
+  if (s < 86400) return Math.floor(s / 3600) + "h";
+  if (s < 86400 * 14) return Math.floor(s / 86400) + "d";
+  return new Date(t).toLocaleDateString();
+}
+
+function paint(sessions) {
+  lastSessions = sessions || [];
+  var rows = lastSessions.slice().sort(function (a, b) {
+    return (b.updated || "").localeCompare(a.updated || "");
+  });
+  titles = {};
+  rows.forEach(function (row) { titles[row.id] = row.title || row.id.slice(0, 8); });
+  var at = list.scrollTop;
+  list.textContent = "";
+  rows.forEach(function (row) {
+    var button = document.createElement("button");
+    button.type = "button";
+    var label = titles[row.id];
+    var name = document.createElement("span");
+    name.className = "t";
+    name.textContent = label;
+    var when = document.createElement("span");
+    when.className = "when";
+    when.textContent = relTime(row.updated);
+    button.appendChild(name);
+    button.appendChild(when);
+    button.setAttribute("title", label);
+    if (row.id === sid) button.className = "on";
+    button.onclick = function () { openSession(row.id, label); };
+    list.appendChild(document.createElement("li")).appendChild(button);
+  });
+  list.scrollTop = at;
+  if (!sid && !autoPicked) {
+    autoPicked = true;
+    if (rows.length) openSession(rows[0].id, titles[rows[0].id]);
+    else if (ws && ws.readyState === 1) ws.send(JSON.stringify({op: "new"}));
+  }
+}
+
+function clearLog() {
+  hideUserEcho = false;
+  resetStream();
+  log.textContent = "";
+  showEmpty();
+}
+
+function openSession(id, label) {
+  sid = id;
+  queued = null;
+  pending = [];
+  paintPending();
+  sawCancel = false;
+  setRunning(false);
+  clearLog();
+  titleEl.textContent = label || titles[id] || id.slice(0, 8);
+  closeMenu();
+  stick = true;
+  if (ws && ws.readyState === 1) ws.send(JSON.stringify({op: "open", id: id}));
+}
+
+function sendNow(text, images) {
+  images = images || [];
+  if (!sid || !ws || ws.readyState !== 1) return;
+  if (!text && !images.length) return;
+  drawOutgoing(text, images);
+  ws.send(JSON.stringify({
+    op: "prompt",
+    id: sid,
+    text: text || "",
+    images: images.map(function (img) { return {mime: img.mime, data: img.data}; }),
+  }));
+  stick = true;
+  setRunning(true);
+}
+
+function flushQueue() {
+  if (!queued) return;
+  var item = queued;
+  queued = null;
+  paintSend();
+  sendNow(item.text, item.images);
+}
+
+function connect() {
+  if (ws && (ws.readyState === 0 || ws.readyState === 1)) return;
+  var scheme = "ws" + (location.protocol.length > 5 ? "s" : "") + ":";
+  var sock = new WebSocket(scheme + "//" + location.host + "/ws");
+  ws = sock;
+  sock.onopen = function () {
+    retryMs = 1000;
+    setLink("up");
+    sock.send(JSON.stringify({op: "list"}));
+    if (sid) {
+      clearLog();
+      titleEl.textContent = titles[sid] || titleEl.textContent;
+      sock.send(JSON.stringify({op: "open", id: sid}));
+    }
+  };
+  sock.onmessage = function (ev) {
+    var msg = JSON.parse(ev.data);
+    if (msg.op === "sessions") paint(msg.sessions || []);
+    else if (msg.op === "opened") {
+      sid = msg.id;
+      paintSend();
+      titleEl.textContent = titles[sid] || (msg.title === "new" ? "New chat" : titleEl.textContent) || "New chat";
+      paintState();
+      if (sock.readyState === 1) sock.send(JSON.stringify({op: "list"}));
+    } else if (msg.op === "update") showUpdate(msg);
+    else if (msg.op === "done") {
+      if (msg.id && msg.id !== sid) return;
+      setRunning(false);
+      if (!sawCancel && msg.stop && msg.stop !== "end_turn" && msg.stop !== "end" && msg.stop !== "cancelled") {
+        addText("err", "Stopped: " + msg.stop);
+      }
+      sawCancel = false;
+      flushQueue();
+    } else if (msg.op === "cancelled") {
+      if (msg.id && msg.id !== sid) return;
+      sawCancel = true;
+      queued = null;
+      setRunning(false);
+      addText("err", "Stopped");
+    } else if (msg.op === "agent") {
+      setLink("down");
+      addText("err", "Agent down");
+    } else if (msg.op === "auth") showAuth(!!msg.signed_in);
+    else if (msg.op === "login") showLogin(msg);
+    else if (msg.op === "error") {
+      setRunning(false);
+      addText("err", msg.message || "error");
+      var signMsg = document.getElementById("signin-msg");
+      if (signMsg && /sign-in|sign in|Google|code|link/i.test(msg.message || "")) signMsg.textContent = msg.message;
+      var sendCode = document.getElementById("signin-send");
+      if (sendCode) sendCode.disabled = false;
+    }
+  };
+  sock.onclose = function () {
+    if (ws !== sock) return;
+    setLink("wait");
+    setTimeout(connect, retryMs);
+    retryMs = Math.min(retryMs * 2, 8000);
+  };
+}
+
+document.getElementById("new").onclick = function () {
+  sid = "";
+  queued = null;
+  pending = [];
+  paintPending();
+  sawCancel = false;
+  setRunning(false);
+  clearLog();
+  titleEl.textContent = "New chat";
+  closeMenu();
+  stick = true;
+  if (ws && ws.readyState === 1) ws.send(JSON.stringify({op: "new"}));
+};
+document.getElementById("menu").onclick = function () { document.body.classList.toggle("menu"); };
+document.getElementById("backdrop").onclick = closeMenu;
+document.getElementById("queue-clear").onclick = function () {
+  queued = null;
+  paintSend();
+};
+function paintPending() {
+  var bar = document.getElementById("pending");
+  bar.textContent = "";
+  bar.className = pending.length ? "on" : "";
+  pending.forEach(function (img, index) {
+    var wrap = document.createElement("div");
+    wrap.className = "thumb";
+    var pic = document.createElement("img");
+    pic.alt = "";
+    pic.src = "data:" + img.mime + ";base64," + img.data;
+    var remove = document.createElement("button");
+    remove.type = "button";
+    remove.textContent = "×";
+    remove.setAttribute("aria-label", "Remove image");
+    remove.onclick = function () {
+      pending.splice(index, 1);
+      paintPending();
+    };
+    wrap.appendChild(pic);
+    wrap.appendChild(remove);
+    bar.appendChild(wrap);
+  });
+}
+function shrink(file) {
+  if (!file || pending.length >= 4) return;
+  if (!/^image\/(png|jpeg|webp|gif)$/.test(file.type || "")) return;
+  var img = new Image();
+  var url = URL.createObjectURL(file);
+  shrinking++;
+  img.onload = function () {
+    var scale = Math.min(1, 1600 / Math.max(img.width, img.height));
+    var canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(img.width * scale));
+    canvas.height = Math.max(1, Math.round(img.height * scale));
+    canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+    URL.revokeObjectURL(url);
+    shrinking--;
+    if (pending.length < 4) {
+      var dataUrl = canvas.toDataURL("image/jpeg", 0.85);
+      pending.push({mime: "image/jpeg", data: dataUrl.split(",")[1]});
+      paintPending();
+    }
+    if (sendWhenReady && shrinking === 0) {
+      sendWhenReady = false;
+      document.getElementById("composer").requestSubmit();
+    }
+  };
+  img.onerror = function () {
+    shrinking--;
+    URL.revokeObjectURL(url);
+    if (sendWhenReady && shrinking === 0) {
+      sendWhenReady = false;
+      document.getElementById("composer").requestSubmit();
+    }
+  };
+  img.src = url;
+}
+function takeFiles(files) {
+  for (var i = 0; i < files.length && pending.length < 4; i++) shrink(files[i]);
+}
+document.getElementById("attach").onclick = function () { document.getElementById("file").click(); };
+document.getElementById("file").onchange = function () {
+  takeFiles(this.files || []);
+  this.value = "";
+};
+document.getElementById("composer").addEventListener("dragover", function (ev) { ev.preventDefault(); });
+document.getElementById("composer").addEventListener("drop", function (ev) {
+  ev.preventDefault();
+  takeFiles(ev.dataTransfer ? ev.dataTransfer.files : []);
+});
+document.addEventListener("paste", function (ev) {
+  var items = (ev.clipboardData && ev.clipboardData.items) || [];
+  var files = [];
+  for (var i = 0; i < items.length; i++) {
+    if ((items[i].type || "").indexOf("image/") === 0) {
+      var file = items[i].getAsFile();
+      if (file) files.push(file);
+    }
+  }
+  if (!files.length) return;
+  ev.preventDefault();
+  takeFiles(files);
+  var extra = ev.clipboardData.getData("text/plain");
+  if (extra && document.activeElement === box) box.value += extra;
+});
+stopBtn.onclick = function () {
+  if (sid && running && ws && ws.readyState === 1) {
+    stopBtn.textContent = "Stopping";
+    ws.send(JSON.stringify({op: "cancel", id: sid}));
+  }
+};
+box.addEventListener("input", function () {
+  box.style.height = "auto";
+  box.style.height = Math.min(box.scrollHeight, 160) + "px";
+});
+box.addEventListener("keydown", function (ev) {
+  if (ev.key === "Enter" && !ev.shiftKey) {
+    ev.preventDefault();
+    if (!sendBtn.disabled) document.getElementById("composer").requestSubmit();
+  }
+});
+document.getElementById("composer").onsubmit = function (ev) {
+  ev.preventDefault();
+  if (shrinking) { sendWhenReady = true; return; }
+  var text = box.value.trim();
+  var images = pending.slice();
+  if (!sid || (!text && !images.length)) return;
+  box.value = "";
+  box.style.height = "auto";
+  pending = [];
+  paintPending();
+  if (running) {
+    queued = {text: text, images: images};
+    paintSend();
+    return;
+  }
+  sendNow(text, images);
+};
+(function () {
+  var app = document.getElementById("app");
+  function fit() {
+    var vv = window.visualViewport;
+    if (!vv) return;
+    app.style.height = vv.height + "px";
+    app.style.top = vv.offsetTop + "px";
+  }
+  if (window.visualViewport) {
+    visualViewport.addEventListener("resize", fit);
+    visualViewport.addEventListener("scroll", fit);
+    fit();
+  }
+  if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");
+  setInterval(function () { if (lastSessions.length) paint(lastSessions); }, 60000);
+})();
+function showAuth(on) {
+  var box = document.getElementById("signin");
+  if (!box) return;
+  box.className = on ? "" : "on";
+}
+function showLogin(msg) {
+  var link = document.getElementById("signin-url");
+  var code = document.getElementById("signin-code");
+  var send = document.getElementById("signin-send");
+  var note = document.getElementById("signin-msg");
+  if (msg.phase === "code" && msg.url) {
+    link.hidden = false;
+    link.href = msg.url;
+    link.textContent = msg.url;
+    code.hidden = false;
+    send.hidden = false;
+    note.textContent = "Open the link, then paste the code once.";
+    code.focus();
+  } else if (msg.phase === "done") {
+    note.textContent = "Signed in.";
+    showAuth(true);
+  }
+}
+document.getElementById("signin-start").onclick = function () {
+  document.getElementById("signin-msg").textContent = "Waiting for agy…";
+  if (ws && ws.readyState === 1) ws.send(JSON.stringify({op: "login_start"}));
+};
+document.getElementById("signin-send").onclick = function () {
+  var code = document.getElementById("signin-code").value.trim();
+  if (!code || !ws || ws.readyState !== 1) return;
+  document.getElementById("signin-code").value = "";
+  document.getElementById("signin-send").disabled = true;
+  document.getElementById("signin-msg").textContent = "Sending the code once…";
+  ws.send(JSON.stringify({op: "login_code", code: code}));
+};
+connect();
+paintState();
+</script>

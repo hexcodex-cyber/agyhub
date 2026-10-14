@@ -1,0 +1,22 @@
+[Unit]
+StartLimitIntervalSec=0
+Description=agyhub phone remote for Antigravity CLI
+After=network-online.target
+
+[Service]
+Type=simple
+User=agyhub
+Group=agyhub
+WorkingDirectory=/opt/agyhub
+Environment=AGYHUB_ROOT=/var/lib/agyhub/hub
+Environment=HOME=/home/agyhub
+# Bind one address. 0.0.0.0 and :: are refused. Change 127.0.0.1 if clients
+# are not on this machine. Add --trusted-proxy <proxy-ip> when a reverse
+# proxy terminates TLS and sends X-Forwarded-Proto.
+# Do not pass --yolo. That flag is --dangerously-skip-permissions.
+ExecStart=/opt/agyhub/.venv/bin/python /opt/agyhub/server.py serve --bind 127.0.0.1:2432 --cwd /var/lib/agyhub/work --secure-cookie --print-timeout 15m
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

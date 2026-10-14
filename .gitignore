@@ -1,0 +1,19 @@
+# Live credentials. Never commit them.
+secrets.json
+data/
+.password
+.totp-once
+auth.json
+*.token
+.env
+.env.*
+*.pem
+*.key
+id_rsa
+id_ed25519
+
+__pycache__/
+*.pyc
+.venv/
+*.bak
+*.bak-*
